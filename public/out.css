@@ -30,8 +30,6 @@
     --container-md: 28rem;
     --container-xl: 36rem;
     --container-6xl: 72rem;
-    --text-xs: 0.75rem;
-    --text-xs--line-height: calc(1 / 0.75);
     --text-sm: 0.875rem;
     --text-sm--line-height: calc(1.25 / 0.875);
     --text-base: 1rem;
@@ -502,6 +500,9 @@
   }
   .text-yellow-500 {
     color: var(--color-yellow-500);
+  }
+  .lowercase {
+    text-transform: lowercase;
   }
   .shadow-lg {
     --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));

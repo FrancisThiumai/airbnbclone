@@ -9,10 +9,7 @@ const {hostRoute} = require('./routes/hostRouter');
 const rootDir= require('./utils/pathUtil');
 const errorsController= require('./controllers/errors');
 const db= require('./utils/databaseUtil');
-
 const app= createApp();
-
-
 
 app.set('view engine', 'ejs'); //we are setting what view engine we r using
 app.set('views', 'views'); //we explicityl state which directory has all views/html

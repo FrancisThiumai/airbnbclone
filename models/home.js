@@ -1,56 +1,51 @@
 const fs = require('fs');
 const path = require('path');
-const rootDir = require('../utils/pathUtil');
 
+const rootDir = require('../utils/pathUtil');
 const homeDataPath = path.join(rootDir, 'data', 'homes.json');
+const db = require('../utils/databaseUtil');
 
 module.exports = class Home {
-    constructor(houseName, price, location, rating, photoUrl) {
+    constructor(houseName, price, location, rating, photoUrl, description, id) {
         this.houseName = houseName;
         this.price = price;
         this.location = location;
         this.rating = rating;
         this.photoUrl = photoUrl;
+        this.description = description;
+        this.id = id;
     };
     save() {
-        Home.fetchAll((registeredHomes) => {
-            if (this.id) { //checking if id is already assigned or not
-                registeredHomes = registeredHomes.map(home =>// map does not mutate original array, it returns new one 
-                    //so the old array is no longer referenced by other variables in code, the GC clears it, and map returns a new array
-                    home.id === this.id ? this : home);
-            } else {
-                this.id = Math.random().toString();
-                registeredHomes.push(this);
-            }
-            fs.writeFile(homeDataPath, JSON.stringify(registeredHomes), (error) => {
-                console.log('file writing concluded', error);
-            });
-        });
+        if (!this.id) { //insert
+            return db.pool.execute(`INSERT INTO homes(housename, price, location, rating, photourl, description) 
+        VALUES(?,?,?,?,?,?)`,
+                [this.houseName, this.price, this.location, this.rating, this.photoUrl, this.description]);
+        }//need to match the name of field when inserting homes(fake_name1, 2, 3, etc) would not work, we need to use same name but could be case insensitive
+        //best to use lowercase field names in db always
+        else { //update
+            return db.pool.execute(`UPDATE homes SET housename=?, price=?, location=?, rating=?, photourl=?, description=? WHERE id=?`,
+                [this.houseName, this.price, this.location, this.rating, this.photoUrl, this.description, this.id]);
+        }
     };
 
-    static fetchAll(callback) {
-        fs.readFile(homeDataPath, (err, data) => {
-            callback(!err ? JSON.parse(data) : []);
-        });
+    static fetchAll() {
+        return db.pool.execute(`SELECT 
+        id,
+        housename as houseName,
+        price,
+        location,
+        rating,
+        photourl as photoUrl,
+        description FROM HOMES`); // this returns a promise
+    };//if the field name in sql db and home object property name differ use alias like i did above
+    //if they r same(case sensitive) can use *(for this particular case) or no alias
+
+    static findById = (homeId) => {
+        return db.pool.execute(`SELECT id, housename as houseName, price,
+        location, rating, photourl as photoUrl, description FROM homes WHERE id=?`, [homeId]);
     };
 
-    static findById = (id, callback) => {
-        this.fetchAll((registeredHomes) => {
-            const reqdHomeData = registeredHomes.find((home) => home.id === id);
-            callback(reqdHomeData);
-        });
+    static deleteById(homeId) {
+        return db.pool.execute(`DELETE FROM homes WHERE id=?`, [homeId]);
     };
-
-    static deleteById(homeId, callback) {
-        this.fetchAll((registeredHomes) => {
-            registeredHomes = registeredHomes.filter(home => {
-                return home.id !== homeId; //if home.id does not match it will pass filter n go on resulting array, 
-                // if matched,i.e., false it will not be included
-                // registeredHomes = registeredHomes.map(home => {
-                //     return home.id === homeId ? null : home;
-                // }).filter(home => home !== null);
-            });
-            fs.writeFile(homeDataPath, JSON.stringify(registeredHomes), callback);
-        });
-    }
 };
