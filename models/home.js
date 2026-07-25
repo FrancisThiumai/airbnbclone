@@ -1,51 +1,19 @@
-const fs = require('fs');
-const path = require('path');
+const mongoose = require('mongoose');
+const favourite = require('./favourite');
 
-const rootDir = require('../utils/pathUtil');
-const homeDataPath = path.join(rootDir, 'data', 'homes.json');
-const db = require('../utils/databaseUtil');
+const homeSchema= new mongoose.Schema({
+    houseName:{type: String, required: true},
+    price: {type: Number, required: true},
+    location: {type: String, required: true},
+    rating: {type: Number, required: true},
+    photoUrl: String,
+    description: String
+});
 
-module.exports = class Home {
-    constructor(houseName, price, location, rating, photoUrl, description, id) {
-        this.houseName = houseName;
-        this.price = price;
-        this.location = location;
-        this.rating = rating;
-        this.photoUrl = photoUrl;
-        this.description = description;
-        this.id = id;
-    };
-    save() {
-        if (!this.id) { //insert
-            return db.pool.execute(`INSERT INTO homes(housename, price, location, rating, photourl, description) 
-        VALUES(?,?,?,?,?,?)`,
-                [this.houseName, this.price, this.location, this.rating, this.photoUrl, this.description]);
-        }//need to match the name of field when inserting homes(fake_name1, 2, 3, etc) would not work, we need to use same name but could be case insensitive
-        //best to use lowercase field names in db always
-        else { //update
-            return db.pool.execute(`UPDATE homes SET housename=?, price=?, location=?, rating=?, photourl=?, description=? WHERE id=?`,
-                [this.houseName, this.price, this.location, this.rating, this.photoUrl, this.description, this.id]);
-        }
-    };
+homeSchema.pre('findOneAndDelete', async function() {//when we call findOneAndDelete on a home object this async function will execute first
+    console.log('pre hook deletion');
+    const homeId = this.getQuery()._id; //this.getQuery()["_id"] also valid or same
+    await favourite.deleteMany({ houseId: homeId });
+});
 
-    static fetchAll() {
-        return db.pool.execute(`SELECT 
-        id,
-        housename as houseName,
-        price,
-        location,
-        rating,
-        photourl as photoUrl,
-        description FROM HOMES`); // this returns a promise
-    };//if the field name in sql db and home object property name differ use alias like i did above
-    //if they r same(case sensitive) can use *(for this particular case) or no alias
-
-    static findById = (homeId) => {
-        return db.pool.execute(`SELECT id, housename as houseName, price,
-        location, rating, photourl as photoUrl, description FROM homes WHERE id=?`, [homeId]);
-    };
-
-    static deleteById(homeId) {
-        return db.pool.execute(`DELETE FROM homes WHERE id=?`, [homeId]);
-    };
-};
+module.exports= mongoose.model('Home', homeSchema);

@@ -9,13 +9,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tailwind": "tailwindcss -i ./views/input.css -o ./public/out.css --watch",
-    "start": "nodemon app.js",
+    "start": "nodemon --delay 1 app.js",
     "css": "npm run tailwind"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.2.2",
     "ejs": "^5.0.2",
     "express": "^5.2.1",
+    "mongodb": "^7.5.0",
+    "mongoose": "^9.7.4",
     "mysql2": "^3.22.5",
     "nodemon": "^3.1.11"
   },
