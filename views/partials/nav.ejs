@@ -3,39 +3,56 @@
         <ul class="flex space-x-4">
             <li>
                 <a href="/"
-                class="<%= currentPage==='index'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
+                    class="<%= currentPage==='index'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
                     Airbnb
                 </a>
             </li>
-            <li>
-                <a href="/homes"
-                class="<%= currentPage==='homes'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
-                Homes List</a>
-            </li>
-            <li>
-                <a href="/bookings"
-                class="<%= currentPage==='bookings'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
-                    Bookings
-                </a>
-            </li>
-            <li>
-                <a href="/favourites"
-                class="<%= currentPage==='favourites'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
-                    Favourites
-                </a>
-            </li>
-            <li>
-                <a href="/host/hostHomeList"
-                class="<%= currentPage==='hostHomes'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
-                    Host Homes
-                </a>
-            </li>
-            <li>
-                <a href="/host/addHome"
-                class="<%= currentPage==='addHome'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
-                    Add Home
-                </a>
-            </li>
+            <% if(isLoggedIn){ %>
+                <li>
+                    <a href="/homes"
+                        class="<%= currentPage==='homes'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
+                        Homes List</a>
+                </li>
+                <li>
+                    <a href="/bookings"
+                        class="<%= currentPage==='bookings'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
+                        Bookings
+                    </a>
+                </li>
+                <li>
+                    <a href="/favourites"
+                        class="<%= currentPage==='favourites'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
+                        Favourites
+                    </a>
+                </li>
+                <li>
+                    <a href="/host/hostHomeList"
+                        class="<%= currentPage==='hostHomes'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
+                        Host Homes
+                    </a>
+                </li>
+                <li>
+                    <a href="/host/addHome"
+                        class="<%= currentPage==='addHome'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
+                        Add Home
+                    </a>
+                </li>
+                <li>
+                    <form action="/logout" method="POST">
+                        <button type="submit" class="bg-blue-700 hover:bg-blue-600 text-white font-semibold py-2.5 px-6 rounded-lg 
+                        transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
+                            Logout
+                        </button>
+                    </form>
+                </li>
+            <% } else { %>
+                 <li>
+                    <a href="/login" class="bg-blue-700 hover:bg-blue-600 text-white font-semibold py-2.5 px-6 rounded-lg 
+                    transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
+                        Login
+                    </a>
+                </li>
+            <% } %>
         </ul>
     </nav>
 </header>

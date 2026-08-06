@@ -4,7 +4,7 @@ const Favourite= require('../models/favourite');
 
 exports.getIndex = (req, res, next)=>{
     Home.find().then((homes)=>{ //array of homes given by the find().toArray()
-        res.render('store/index', {registeredHomes: homes, pageTitle: 'airbnb Home', currentPage: 'index'} );
+        res.render('store/index', {registeredHomes: homes, pageTitle: 'airbnb Home', currentPage: 'index', isLoggedIn: req.isLoggedIn} );
     }).catch(error=>{
         console.log("error fetching db");
     });
@@ -12,12 +12,12 @@ exports.getIndex = (req, res, next)=>{
 
 exports.getHomes = (req, res, next)=>{
     Home.find().then((homes)=>{ //we don't need the [] to destructure like in mySQL because we get the array directly
-        res.render('store/homelist', {registeredHomes: homes, pageTitle: 'Homes List', currentPage: 'homes'} );
+        res.render('store/homelist', {registeredHomes: homes, pageTitle: 'Homes List', currentPage: 'homes', isLoggedIn: req.isLoggedIn} );
     });
 };
 
 exports.getBookings = (req, res, next)=>{
-    res.render('store/bookings', { pageTitle: 'My Bookings', currentPage: 'bookings'} );
+    res.render('store/bookings', { pageTitle: 'My Bookings', currentPage: 'bookings', isLoggedIn: req.isLoggedIn} );
 };
 
 exports.getFavouriteList = (req, res, next)=>{
@@ -26,7 +26,7 @@ exports.getFavouriteList = (req, res, next)=>{
     .then((favourites)=>{
         const favouriteHomes = favourites.map(fav=> fav.houseId); //getting only the houseId as array
         console.log(favourites);
-            res.render('store/favouriteList', {favouriteHomes: favouriteHomes, pageTitle: 'My Favourites', currentPage: 'favourites'} );
+            res.render('store/favouriteList', {favouriteHomes: favouriteHomes, pageTitle: 'My Favourites', currentPage: 'favourites', isLoggedIn: req.isLoggedIn} );
     });
 };
 
@@ -70,7 +70,7 @@ exports.getHomeDetails = (req, res, next)=>{
         }
         else{
             console.log(homeId, home._id);
-            res.render('store/homeDetail', {home: home, pageTitle: 'Home Details', currentPage: 'homes'});
+            res.render('store/homeDetail', {home: home, pageTitle: 'Home Details', currentPage: 'homes', isLoggedIn: req.isLoggedIn});
         }
     });
 };

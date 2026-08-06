@@ -2,7 +2,7 @@
 const Home = require('../models/home')
 
 exports.getAddHome = (req, res, next) => {
-    res.render('host/editHome', { pageTitle: 'Add Home to Airbnb', currentPage: 'addHome', editing: false });
+    res.render('host/editHome', { pageTitle: 'Add Home to Airbnb', currentPage: 'addHome', editing: false, isLoggedIn: req.isLoggedIn});
 };
 
 exports.postAddHome = (req, res, next) => {
@@ -23,7 +23,7 @@ exports.getEditHome = (req, res, next) => {
             console.log("Home is not found");
             return res.redirect('/host/hostHomeList');
         }
-        return res.render('host/editHome', { pageTitle: 'Edit Your Home', currentPage: 'hostHomes', editing: editing, home: home });
+        return res.render('host/editHome', { pageTitle: 'Edit Your Home', currentPage: 'hostHomes', editing: editing, home: home, isLoggedIn: req.isLoggedIn });
     });
 };
 
@@ -61,6 +61,6 @@ exports.postDeleteHome = (req, res, next) => {
 
 exports.getHostHomes = (req, res, next) => {
     Home.find().then((registeredHomes) => {
-        res.render('host/hostHomelist', { registeredHomes: registeredHomes, pageTitle: 'Host Homes List', currentPage: 'hostHomes' });
+        res.render('host/hostHomelist', { registeredHomes: registeredHomes, pageTitle: 'Host Homes List', currentPage: 'hostHomes', isLoggedIn: req.isLoggedIn});
     });
 };
