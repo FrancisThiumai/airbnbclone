@@ -1,5 +1,5 @@
 {
-  "name": "lecture15-sql",
+  "name": "lecture19-auth",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
@@ -14,10 +14,12 @@
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.2.2",
+    "bcryptjs": "^3.0.3",
     "connect-mongodb-session": "^5.0.0",
     "ejs": "^5.0.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
+    "express-validator": "^7.3.2",
     "mongodb": "^7.5.0",
     "mongoose": "^9.7.4",
     "mysql2": "^3.22.5",

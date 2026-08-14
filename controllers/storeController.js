@@ -1,10 +1,10 @@
 //local modules
 const Home= require('../models/home');
-const Favourite= require('../models/favourite');
+const User= require('../models/users')
 
 exports.getIndex = (req, res, next)=>{
     Home.find().then((homes)=>{ //array of homes given by the find().toArray()
-        res.render('store/index', {registeredHomes: homes, pageTitle: 'airbnb Home', currentPage: 'index', isLoggedIn: req.isLoggedIn} );
+        res.render('store/index', {registeredHomes: homes, pageTitle: 'airbnb Home', currentPage: 'index', isLoggedIn: req.isLoggedIn, user: req.user} );
     }).catch(error=>{
         console.log("error fetching db");
     });
@@ -12,53 +12,49 @@ exports.getIndex = (req, res, next)=>{
 
 exports.getHomes = (req, res, next)=>{
     Home.find().then((homes)=>{ //we don't need the [] to destructure like in mySQL because we get the array directly
-        res.render('store/homelist', {registeredHomes: homes, pageTitle: 'Homes List', currentPage: 'homes', isLoggedIn: req.isLoggedIn} );
+        res.render('store/homelist', {registeredHomes: homes, pageTitle: 'Homes List', currentPage: 'homes', isLoggedIn: req.isLoggedIn, user: req.user} );
     });
 };
 
 exports.getBookings = (req, res, next)=>{
-    res.render('store/bookings', { pageTitle: 'My Bookings', currentPage: 'bookings', isLoggedIn: req.isLoggedIn} );
+    res.render('store/bookings', { pageTitle: 'My Bookings', currentPage: 'bookings', isLoggedIn: req.isLoggedIn, user: req.user} );
 };
 
-exports.getFavouriteList = (req, res, next)=>{
-    Favourite.find()
-    .populate('houseId')
-    .then((favourites)=>{
-        const favouriteHomes = favourites.map(fav=> fav.houseId); //getting only the houseId as array
-        console.log(favourites);
-            res.render('store/favouriteList', {favouriteHomes: favouriteHomes, pageTitle: 'My Favourites', currentPage: 'favourites', isLoggedIn: req.isLoggedIn} );
-    });
+exports.getFavouriteList = async (req, res, next)=>{
+    const user = await User.findById(req.user._id).populate('favourites');
+
+    const favouriteHomes = user.favourites
+    res.render('store/favouriteList', {favouriteHomes: favouriteHomes, 
+        pageTitle: 'My Favourites', currentPage: 'favourites', 
+        isLoggedIn: req.isLoggedIn, user: req.user} );
 };
 
-exports.postAddToFavourite = (req, res, next)=>{
+exports.postAddToFavourite = async (req, res, next)=>{
     const homeId= req.body.id;
-    Favourite.findOne({houseId: homeId}).then((fav)=>{
-        if(!fav){
-            fav= new Favourite({houseId: homeId});
-            fav.save().then(res=>{console.log("added to favourites", res);
-            }).catch(err=>{
-                console.log("error while adding to favourite", err);
-            });
-        }
-        else{
-            console.log("already marked as favourite");
-        }
-    }).catch(err=>{
-        console.log("err while finding houseId", err);
-    }).finally(()=>{
-        res.redirect('/homes');
-    });
+    const userId= req.user._id;
+
+    const user= await User.findById(req.user._id);
+    if(!user.favourites.includes(homeId))
+    {
+        user.favourites.push(homeId);
+        await user.save();
+    }
+    res.redirect('./favourites');
 
 };
 
-exports.postDeleteFavourite= (req, res, next)=>{
-    Favourite.findOneAndDelete({ houseId: req.params.homeId }).then((result)=>{
-        console.log('favourite removed', result);
-    }).catch(err=>{
-        console.log('error deleting', err);
-    }).finally(()=>{
-        res.redirect('/favourites');
+exports.postDeleteFavourite= async (req, res, next)=>{
+    const homeId= req.params.homeId;
+    // const user= await User.findById(req.user._id);
+    // if(user.favourites.includes(homeId)){
+    //     user.favourites= user.favourites.filter(fav => fav!=homeId);
+    //     await user.save();
+    // }
+
+    await User.findByIdAndUpdate(req.user._id, { //we can use built in mongoose method
+    $pull: { favourites: homeId }
     });
+    res.redirect('/favourites');
 }
 
 exports.getHomeDetails = (req, res, next)=>{
@@ -70,7 +66,7 @@ exports.getHomeDetails = (req, res, next)=>{
         }
         else{
             console.log(homeId, home._id);
-            res.render('store/homeDetail', {home: home, pageTitle: 'Home Details', currentPage: 'homes', isLoggedIn: req.isLoggedIn});
+            res.render('store/homeDetail', {home: home, pageTitle: 'Home Details', currentPage: 'homes', isLoggedIn: req.isLoggedIn, user: req.user});
         }
     });
 };

@@ -33,8 +33,22 @@ app.use(session({
     store: store
 }));
 
-app.use((req, res, next) => {
+app.use((req, res, next) => { //isLoggedIn data
     req.isLoggedIn = req.session.isLoggedIn;
+    next();
+});
+const User = require('./models/users');
+
+app.use(async (req, res, next) => {//for user Object
+    try {
+        if (req.session.userId) {
+            req.user = await User.findById(req.session.userId);
+        } else {
+            req.user = null;
+        }
+    } catch (err) {
+        req.user = null;
+    }
     next();
 });
 

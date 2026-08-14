@@ -1,55 +1,63 @@
-<header class="bg-red-500 text-white p-4 shadow-md">
-    <nav class="container mx-auto flex justify-center items-center">
-        <ul class="flex space-x-4">
-            <li>
-                <a href="/"
-                    class="<%= currentPage==='index'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
-                    Airbnb
-                </a>
-            </li>
+<header class="bg-gradient-to-r from-red-500 to-red-600 text-white p-5 shadow-lg sticky top-0 w-full z-50">
+    <nav class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center">
+            <a href="/"
+                class="text-2xl font-bold <%= currentPage==='index'? 'text-red-200' :'text-white' %>">
+                ✨ Airbnb
+            </a>
+        </div>
+        
+        <ul class="flex items-center space-x-2">
             <% if(isLoggedIn){ %>
+                <% if(user && user.userType==="guest") { %>
                 <li>
                     <a href="/homes"
-                        class="<%= currentPage==='homes'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
-                        Homes List</a>
+                        class="<%= currentPage==='homes'? 'bg-red-700 shadow-lg' :'bg-red-500' %> py-2.5 px-4 rounded-lg font-medium">
+                        Homes
+                    </a>
                 </li>
                 <li>
                     <a href="/bookings"
-                        class="<%= currentPage==='bookings'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
+                        class="<%= currentPage==='bookings'? 'bg-red-700 shadow-lg' :'bg-red-500' %> py-2.5 px-4 rounded-lg font-medium">
                         Bookings
                     </a>
                 </li>
                 <li>
                     <a href="/favourites"
-                        class="<%= currentPage==='favourites'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
-                        Favourites
+                        class="<%= currentPage==='favourites'? 'bg-red-700 shadow-lg' :'bg-red-500' %> py-2.5 px-4 rounded-lg font-medium">
+                        Favorites
                     </a>
                 </li>
+                <% } else {%>
                 <li>
                     <a href="/host/hostHomeList"
-                        class="<%= currentPage==='hostHomes'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
+                        class="<%= currentPage==='hostHomes'? 'bg-red-700 shadow-lg' :'bg-red-500' %> py-2.5 px-4 rounded-lg font-medium">
                         Host Homes
                     </a>
                 </li>
                 <li>
                     <a href="/host/addHome"
-                        class="<%= currentPage==='addHome'? 'bg-red-400' :'hover:bg-red-400' %> py-2 px-4 rounded transition duration-300">
+                        class="<%= currentPage==='addHome'? 'bg-red-700 shadow-lg' :'bg-red-500' %> py-2.5 px-4 rounded-lg font-medium">
                         Add Home
                     </a>
                 </li>
-                <li>
-                    <form action="/logout" method="POST">
-                        <button type="submit" class="bg-blue-700 hover:bg-blue-600 text-white font-semibold py-2.5 px-6 rounded-lg 
-                        transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
+                <% } %>
+                <li class="ml-4 pl-4 border-l border-red-400">
+                    <form action="/logout" method="POST" class="inline">
+                        <button type="submit" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md">
                             Logout
                         </button>
                     </form>
                 </li>
             <% } else { %>
-                 <li>
-                    <a href="/login" class="bg-blue-700 hover:bg-blue-600 text-white font-semibold py-2.5 px-6 rounded-lg 
-                    transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
+                <li>
+                    <a href="/login" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md">
                         Login
+                    </a>
+                </li>
+                <li>
+                    <a href="/sign-up" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md">
+                        Sign Up
                     </a>
                 </li>
             <% } %>

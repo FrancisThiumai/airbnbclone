@@ -1,8 +1,8 @@
 //local modules
 const Home = require('../models/home')
 
-exports.getAddHome = (req, res, next) => {
-    res.render('host/editHome', { pageTitle: 'Add Home to Airbnb', currentPage: 'addHome', editing: false, isLoggedIn: req.isLoggedIn});
+exports.getAddHome = async (req, res, next) => {
+    res.render('host/editHome', { pageTitle: 'Add Home to Airbnb', currentPage: 'addHome', editing: false, isLoggedIn: req.isLoggedIn, user: req.user});
 };
 
 exports.postAddHome = (req, res, next) => {
@@ -23,7 +23,7 @@ exports.getEditHome = (req, res, next) => {
             console.log("Home is not found");
             return res.redirect('/host/hostHomeList');
         }
-        return res.render('host/editHome', { pageTitle: 'Edit Your Home', currentPage: 'hostHomes', editing: editing, home: home, isLoggedIn: req.isLoggedIn });
+        return res.render('host/editHome', { pageTitle: 'Edit Your Home', currentPage: 'hostHomes', editing: editing, home: home, isLoggedIn: req.isLoggedIn, user: req.user });
     });
 };
 
@@ -61,6 +61,6 @@ exports.postDeleteHome = (req, res, next) => {
 
 exports.getHostHomes = (req, res, next) => {
     Home.find().then((registeredHomes) => {
-        res.render('host/hostHomelist', { registeredHomes: registeredHomes, pageTitle: 'Host Homes List', currentPage: 'hostHomes', isLoggedIn: req.isLoggedIn});
+        res.render('host/hostHomelist', { registeredHomes: registeredHomes, pageTitle: 'Host Homes List', currentPage: 'hostHomes', isLoggedIn: req.isLoggedIn, user: req.user});
     });
 };
