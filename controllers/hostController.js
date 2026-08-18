@@ -1,13 +1,22 @@
 //local modules
 const Home = require('../models/home')
+const fs= require('fs');
 
 exports.getAddHome = async (req, res, next) => {
     res.render('host/editHome', { pageTitle: 'Add Home to Airbnb', currentPage: 'addHome', editing: false, isLoggedIn: req.isLoggedIn, user: req.user});
 };
 
 exports.postAddHome = (req, res, next) => {
-    const { houseName, price, location, rating, photoUrl, description } = req.body;
-    const home = new Home({ houseName, price, location, rating, photoUrl, description });//the mongoose made model expects an already made object not fields
+    const { houseName, price, location, rating, description } = req.body;
+    if(!req.file){
+        console.log("no valid image provided");
+        res.status(422).send('/host/addHome');
+    }
+    console.log(req.file);
+    const photo= req.file.path;
+    console.log(photo);
+
+    const home = new Home({ houseName, price, location, rating, photo, description });//the mongoose made model expects an already made object not fields
     home.save().then((result) => {
         console.log("Home saved succesfully", result);
     });
@@ -28,14 +37,19 @@ exports.getEditHome = (req, res, next) => {
 };
 
 exports.postEditHome = (req, res, next) => {
-    const { id, houseName, price, location, rating, photoUrl, description } = req.body;
+    const { id, houseName, price, location, rating, description } = req.body;
     Home.findById(id).then((home) => {
         home.houseName = houseName;
         home.price = price;
         home.location = location;
         home.rating = rating;
-        home.photoUrl = photoUrl;
         home.description = description;
+        if(req.file){
+            fs.unlink(home.photo, (err)=>{
+                if(err) console.log("error in deleting/unlinking the photo",err);
+            })
+            home.photo= req.file.path;
+        }
 
         return home.save().then(result => {
             console.log("home updated", result);

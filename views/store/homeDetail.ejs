@@ -9,7 +9,7 @@
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div class="rounded-lg overflow-hidden">
-                  <img src="<%= home.photoUrl %>" alt="<%= home.HouseName %>" class="w-full h-96 object-cover">
+                  <img src="<%= home.photo %>" alt="<%= home.HouseName %>" class="w-full h-96 object-cover">
               </div>
               
               <div class="space-y-6">
@@ -38,6 +38,15 @@
                 <div class="mt-2">
                     <%- include('../partials/favourite') %>
                 </div>
+                <a href="/rules/<%= home._id%>"
+                    class="inline-flex items-center text-blue-600 hover:text-blue-800">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                        <path stroke-linecape="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3
+                        3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2
+                        2 0 01-2 2z"/>
+                    </svg>
+                    House Rules
+                </a>
                 </div>
             </div>
       </main>

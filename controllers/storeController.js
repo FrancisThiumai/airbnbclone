@@ -1,6 +1,7 @@
 //local modules
 const Home= require('../models/home');
 const User= require('../models/users')
+const rootDir= require('../utils/pathUtil');
 
 exports.getIndex = (req, res, next)=>{
     Home.find().then((homes)=>{ //array of homes given by the find().toArray()
@@ -45,12 +46,6 @@ exports.postAddToFavourite = async (req, res, next)=>{
 
 exports.postDeleteFavourite= async (req, res, next)=>{
     const homeId= req.params.homeId;
-    // const user= await User.findById(req.user._id);
-    // if(user.favourites.includes(homeId)){
-    //     user.favourites= user.favourites.filter(fav => fav!=homeId);
-    //     await user.save();
-    // }
-
     await User.findByIdAndUpdate(req.user._id, { //we can use built in mongoose method
     $pull: { favourites: homeId }
     });
@@ -70,3 +65,13 @@ exports.getHomeDetails = (req, res, next)=>{
         }
     });
 };
+
+exports.getHouseRules= (req, res, next) =>{
+    if(!req.session.isLoggedIn){
+        return res.redirect('/login');
+    }
+    const homeId= req.params.homeId;
+    const rulesFileName= 'HouseRules.pdf';
+    const filePath= path.join(rootDir, 'rules', rulesFileName);
+    res.download(filePath, 'Rules.pdf');
+}

@@ -8,8 +8,6 @@ const storeRoute = express.Router();
 //local module
 const controller= require('../controllers/storeController');
 
-// const rootDir= path.dirname(require.main.filename);// can also do this or import the pathUtil module
-
 storeRoute.get('/', controller.getIndex);
 
 storeRoute.get('/bookings', controller.getBookings);
@@ -23,5 +21,7 @@ storeRoute.get('/homes/:homeId', controller.getHomeDetails);
 storeRoute.post('/favourites', controller.postAddToFavourite);
 
 storeRoute.post('/favourite/delete/:homeId', controller.postDeleteFavourite);
+
+storeRoute.get('/rules/:homeId', controller.getHouseRules);
 
 module.exports = storeRoute;
