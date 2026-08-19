@@ -35,11 +35,17 @@ function randomString(n){
     return result;
 }
 const multerOption = multer.diskStorage({
-    destination : (req, file, cb)=>{cb(null, 'uploads/')},
+    destination : (req, file, cb)=>{
+        if(file.fieldname==='photo') cb(null, 'uploads/')
+        if(file.fieldname==='rules') cb(null, 'public/addin');
+        },
     filename: (req, file, cb)=>{cb(null, randomString(10)+ "_"+ file.originalname)}
 });
 const fileFilter= (req, file, cb)=>{
-    if(['image/jpeg', 'image/jpg', 'image/png'].includes(file.mimetype)){
+    if(file.fieldname==='photo' && ['image/jpeg', 'image/jpg', 'image/png'].includes(file.mimetype)){
+        cb(null, true);
+    }
+    else if(file.fieldname==='rules' && ['application/pdf'].includes(file.mimetype)){
         cb(null, true);
     }
     else{
@@ -48,7 +54,7 @@ const fileFilter= (req, file, cb)=>{
 }
 
 app.use(express.urlencoded());
-app.use(multer({storage: multerOption, fileFilter}).single('photo'));
+app.use(multer({storage: multerOption, fileFilter}).fields([{name: 'photo'}, {name:'rules'}]));
 app.use(express.static(path.join(rootDir, '/public')));
 // app.use((req, res, next) => {
 //   if (req.url.includes('/uploads/')) {

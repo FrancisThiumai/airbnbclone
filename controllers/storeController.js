@@ -2,6 +2,7 @@
 const Home= require('../models/home');
 const User= require('../models/users')
 const rootDir= require('../utils/pathUtil');
+const path= require('path');
 
 exports.getIndex = (req, res, next)=>{
     Home.find().then((homes)=>{ //array of homes given by the find().toArray()
@@ -66,12 +67,18 @@ exports.getHomeDetails = (req, res, next)=>{
     });
 };
 
-exports.getHouseRules= (req, res, next) =>{
+exports.getHouseRules= async (req, res, next) =>{
     if(!req.session.isLoggedIn){
         return res.redirect('/login');
     }
-    const homeId= req.params.homeId;
-    const rulesFileName= 'HouseRules.pdf';
-    const filePath= path.join(rootDir, 'rules', rulesFileName);
-    res.download(filePath, 'Rules.pdf');
+    
+        const homeId= req.params.homeId;
+        const home= await Home.findById(homeId);
+        const filePath = path.join(rootDir, 'public', home.rules); 
+    try{
+        res.download(filePath, 'Rules.pdf');
+    }
+    catch(err){
+        res.status(500).send('internal server error').redirect('/homes');
+    }
 }
