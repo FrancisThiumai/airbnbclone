@@ -35,13 +35,11 @@ exports.postLogin = async (req, res, next) => {
 
     req.session.isLoggedIn= true;
     req.session.userId= user._id.toString();
-    // res.cookie("isLoggedIn", true); //setting cookie key value as true for the specific client storage
     await req.session.save();
     res.redirect('/');
 };
 
 exports.postLogout = (req, res, next) => {
-    // res.cookie("isLoggedIn", false); //or we can also do res.clearCookie("isLoggedIn");
     req.session.destroy(err => {
         if (err) {
             console.log(err);
@@ -56,16 +54,14 @@ exports.getSignUp = (req, res, next) => {
 
 exports.postSignUp = [
     check('firstName')
-        // .notEmpty()  no need to check if empty cuz we already checking min length 2
-        // .withMessage('first name is required')
-        .trim() // removes white spaces
+        .trim()
         .isLength({ min: 2 })
         .withMessage("First name should have atleast 2 letters")
         .matches(/^[A-Za-z\s]+$/)
         .withMessage("First name should contain only alphabets"),
 
     check('lastName')
-        .trim() // removes white spaces
+        .trim()
         .matches(/^[A-Za-z\s]*$/)
         .withMessage("First name should contain only alphabets"),
 

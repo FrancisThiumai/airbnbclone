@@ -11,8 +11,7 @@ const homeSchema= new mongoose.Schema({
     description: String
 });
 
-homeSchema.pre('findOneAndDelete', async function() {//when we call findOneAndDelete on a home object this async function will execute first
-    console.log('pre hook deletion');
+homeSchema.pre('findOneAndDelete', async function() {
     const homeId = this.getQuery()._id;
     await User.updateMany({}, {$pull: { favourites: homeId }});
 });

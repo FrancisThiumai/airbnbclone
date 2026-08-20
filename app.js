@@ -1,7 +1,6 @@
-//core module
+
 const path = require('path');
 
-//external
 const express = require('express');
 const session = require('express-session');
 const mongoDBStore = require('connect-mongodb-session')(session);
@@ -9,7 +8,6 @@ const DB_PATH = 'mongodb+srv://root:root@completecoding.d7mjeky.mongodb.net/airb
 const { default: mongoose } = require('mongoose');
 const multer= require('multer');
 
-//local
 const storeRoute = require('./routes/storeRouter');
 const { hostRoute } = require('./routes/hostRouter');
 const authRoute = require('./routes/authRouter');

@@ -1,11 +1,11 @@
-//local modules
+
 const Home= require('../models/home');
 const User= require('../models/users')
 const rootDir= require('../utils/pathUtil');
 const path= require('path');
 
 exports.getIndex = (req, res, next)=>{
-    Home.find().then((homes)=>{ //array of homes given by the find().toArray()
+    Home.find().then((homes)=>{
         res.render('store/index', {registeredHomes: homes, pageTitle: 'airbnb Home', currentPage: 'index', isLoggedIn: req.isLoggedIn, user: req.user} );
     }).catch(error=>{
         console.log("error fetching db");
@@ -13,7 +13,7 @@ exports.getIndex = (req, res, next)=>{
 };
 
 exports.getHomes = (req, res, next)=>{
-    Home.find().then((homes)=>{ //we don't need the [] to destructure like in mySQL because we get the array directly
+    Home.find().then((homes)=>{ 
         res.render('store/homelist', {registeredHomes: homes, pageTitle: 'Homes List', currentPage: 'homes', isLoggedIn: req.isLoggedIn, user: req.user} );
     });
 };
@@ -47,14 +47,14 @@ exports.postAddToFavourite = async (req, res, next)=>{
 
 exports.postDeleteFavourite= async (req, res, next)=>{
     const homeId= req.params.homeId;
-    await User.findByIdAndUpdate(req.user._id, { //we can use built in mongoose method
+    await User.findByIdAndUpdate(req.user._id, {
     $pull: { favourites: homeId }
     });
     res.redirect('/favourites');
 }
 
 exports.getHomeDetails = (req, res, next)=>{
-    const homeId= req.params.homeId; //this comes from the storeRouter variable homeId which comes from the homeList home object which has id
+    const homeId= req.params.homeId;
     Home.findById(homeId).then((home)=>{
         if(!home){
             console.log("home not found");
